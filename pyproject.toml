@@ -1,0 +1,11 @@
+[project]
+dependencies = [
+    "speech2text @ file:../packages/speech2text",
+    "llmclient @ file:../packages/llmclient",
+    "ttsclient @ file:../packages/ttsclient",
+    "reachy_mini_lib @ file:../packages/reachy_mini_lib",
+    "pynput",
+    "sounddevice",
+    "soundfile",
+    "numpy"
+]

@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/speech2text/__init__.py
+src/speech2text/transcriber.py
+src/speech2text/utils.py
+src/speech2text.egg-info/PKG-INFO
+src/speech2text.egg-info/SOURCES.txt
+src/speech2text.egg-info/dependency_links.txt
+src/speech2text.egg-info/requires.txt
+src/speech2text.egg-info/top_level.txt

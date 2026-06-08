@@ -1,0 +1,8 @@
+pyproject.toml
+src/ttsclient/__init__.py
+src/ttsclient/tts.py
+src/ttsclient.egg-info/PKG-INFO
+src/ttsclient.egg-info/SOURCES.txt
+src/ttsclient.egg-info/dependency_links.txt
+src/ttsclient.egg-info/requires.txt
+src/ttsclient.egg-info/top_level.txt

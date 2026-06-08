@@ -1,0 +1,9 @@
+pyproject.toml
+src/reachy_assistant/__init__.py
+src/reachy_assistant/action_mapper.py
+src/reachy_assistant/assistant.py
+src/reachy_assistant/key_listener.py
+src/reachy_assistant.egg-info/PKG-INFO
+src/reachy_assistant.egg-info/SOURCES.txt
+src/reachy_assistant.egg-info/dependency_links.txt
+src/reachy_assistant.egg-info/top_level.txt
