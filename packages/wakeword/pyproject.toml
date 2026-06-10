@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wakeword"
+version = "0.1.0"
+description = "Minimal wake word detection using openWakeWord"
+dependencies = [
+    "openwakeword>=0.1.0",
+    "sounddevice>=0.4.5",
+    "numpy>=1.21.0"
+]

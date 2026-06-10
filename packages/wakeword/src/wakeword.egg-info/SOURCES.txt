@@ -1,0 +1,8 @@
+pyproject.toml
+src/wakeword/__init__.py
+src/wakeword/detector.py
+src/wakeword.egg-info/PKG-INFO
+src/wakeword.egg-info/SOURCES.txt
+src/wakeword.egg-info/dependency_links.txt
+src/wakeword.egg-info/requires.txt
+src/wakeword.egg-info/top_level.txt

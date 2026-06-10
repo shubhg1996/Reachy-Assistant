@@ -1,6 +1,11 @@
 pyproject.toml
 src/reachy_mini_lib/__init__.py
-src/reachy_mini_lib/robot.py
+src/reachy_mini_lib/audio.py
+src/reachy_mini_lib/core.py
+src/reachy_mini_lib/motion.py
+src/reachy_mini_lib/moves.py
+src/reachy_mini_lib/torque.py
+src/reachy_mini_lib/utils.py
 src/reachy_mini_lib.egg-info/PKG-INFO
 src/reachy_mini_lib.egg-info/SOURCES.txt
 src/reachy_mini_lib.egg-info/dependency_links.txt

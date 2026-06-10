@@ -1,0 +1,57 @@
+2026-06-08 22:35:32.789 - RealTimeSTT: realtimestt - INFO - Starting RealTimeSTT
+2026-06-08 22:35:32.795 - RealTimeSTT: realtimestt - INFO - Initializing audio recording (creating pyAudio input stream, sample rate: 16000 buffer size: 512
+2026-06-08 22:37:42.210 - RealTimeSTT: realtimestt - INFO - Starting RealTimeSTT
+2026-06-08 22:37:42.216 - RealTimeSTT: realtimestt - INFO - Initializing audio recording (creating pyAudio input stream, sample rate: 16000 buffer size: 512
+2026-06-08 22:37:42.223 - RealTimeSTT: realtimestt - ERROR - Error initializing porcupine wake word detection engine: create() missing 1 required positional argument: 'access_key'. Wakewords: ['hey reachy', 'computer'].
+Traceback (most recent call last):
+  File "/Users/shubhgupta/micromamba/envs/reachy/lib/python3.13/site-packages/RealtimeSTT/core/wakeword.py", line 114, in setup_wakeword_detection
+    recorder.porcupine = pvporcupine.create(
+                         ~~~~~~~~~~~~~~~~~~^
+        keywords=recorder.wake_words_list,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        sensitivities=recorder.wake_words_sensitivities
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+TypeError: create() missing 1 required positional argument: 'access_key'
+2026-06-08 22:38:45.566 - RealTimeSTT: realtimestt - INFO - Starting RealTimeSTT
+2026-06-08 22:38:45.571 - RealTimeSTT: realtimestt - INFO - Initializing audio recording (creating pyAudio input stream, sample rate: 16000 buffer size: 512
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - INFO - Successfully loaded openwakeword model: alexa
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - INFO - Successfully loaded openwakeword model: hey_mycroft
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - INFO - Successfully loaded openwakeword model: hey_jarvis
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - INFO - Successfully loaded openwakeword model: hey_rhasspy
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - INFO - Successfully loaded openwakeword model: timer
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - INFO - Successfully loaded openwakeword model: weather
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - DEBUG - Open wake word detection engine initialized successfully
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - INFO - Initializing WebRTC voice with Sensitivity 3
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - DEBUG - WebRTC VAD voice activity detection engine initialized successfully
+2026-06-08 22:39:01.194 - RealTimeSTT: realtimestt - DEBUG - Silero VAD auto backend raw_onnx_ifless unavailable
+Traceback (most recent call last):
+  File "/Users/shubhgupta/micromamba/envs/reachy/lib/python3.13/site-packages/RealtimeSTT/core/silero_vad.py", line 176, in _create_auto_vad
+    return _create_raw_onnx_vad(
+        model_name,
+    ...<4 lines>...
+        chunk_samples,
+    )
+  File "/Users/shubhgupta/micromamba/envs/reachy/lib/python3.13/site-packages/RealtimeSTT/core/silero_vad.py", line 225, in _create_raw_onnx_vad
+    raise SileroVadError(
+    ...<3 lines>...
+    )
+RealtimeSTT.core.silero_vad.SileroVadError: Could not find silero_vad_op18_ifless.onnx in the installed silero_vad package or the local torch hub cache. Install 'silero-vad' or pass silero_onnx_model_path.
+2026-06-08 22:39:01.195 - RealTimeSTT: realtimestt - DEBUG - Silero VAD auto backend raw_onnx unavailable
+Traceback (most recent call last):
+  File "/Users/shubhgupta/micromamba/envs/reachy/lib/python3.13/site-packages/RealtimeSTT/core/silero_vad.py", line 176, in _create_auto_vad
+    return _create_raw_onnx_vad(
+        model_name,
+    ...<4 lines>...
+        chunk_samples,
+    )
+  File "/Users/shubhgupta/micromamba/envs/reachy/lib/python3.13/site-packages/RealtimeSTT/core/silero_vad.py", line 225, in _create_raw_onnx_vad
+    raise SileroVadError(
+    ...<3 lines>...
+    )
+RealtimeSTT.core.silero_vad.SileroVadError: Could not find silero_vad.onnx in the installed silero_vad package or the local torch hub cache. Install 'silero-vad' or pass silero_onnx_model_path.
+2026-06-08 22:39:11.046 - RealTimeSTT: realtimestt - DEBUG - Silero VAD voice activity detection engine initialized successfully with backend pytorch_cpu
+2026-06-08 22:39:11.126 - RealTimeSTT: realtimestt - DEBUG - Starting realtime worker
+2026-06-08 22:39:11.126 - RealTimeSTT: realtimestt - DEBUG - Waiting for main transcription model to start
+2026-06-08 22:39:11.126 - RealTimeSTT: realtimestt - DEBUG - Realtime transcription disabled; realtime worker exits

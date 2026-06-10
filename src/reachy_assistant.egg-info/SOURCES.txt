@@ -1,9 +1,14 @@
+README.md
 pyproject.toml
 src/reachy_assistant/__init__.py
 src/reachy_assistant/action_mapper.py
 src/reachy_assistant/assistant.py
+src/reachy_assistant/camera_handler.py
+src/reachy_assistant/intent_handlers.py
 src/reachy_assistant/key_listener.py
 src/reachy_assistant.egg-info/PKG-INFO
 src/reachy_assistant.egg-info/SOURCES.txt
 src/reachy_assistant.egg-info/dependency_links.txt
+src/reachy_assistant.egg-info/entry_points.txt
+src/reachy_assistant.egg-info/requires.txt
 src/reachy_assistant.egg-info/top_level.txt

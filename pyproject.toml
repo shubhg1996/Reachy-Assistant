@@ -1,11 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
+name = "reachy_assistant"
+version = "0.1.0"
+description = "Voice-controlled AI assistant for Reachy Mini"
+readme = "README.md"
+requires-python = ">=3.8"
 dependencies = [
-    "speech2text @ file:../packages/speech2text",
-    "llmclient @ file:../packages/llmclient",
-    "ttsclient @ file:../packages/ttsclient",
-    "reachy_mini_lib @ file:../packages/reachy_mini_lib",
-    "pynput",
-    "sounddevice",
-    "soundfile",
-    "numpy"
+    "pynput>=1.7.6",
+    "sounddevice>=0.4.5",
+    "soundfile>=0.12.1",
+    "numpy>=1.24.0",
+    "speech2text @ file:./packages/speech2text",
+    "llmclient @ file:./packages/llmclient",
+    "ttsclient @ file:./packages/ttsclient",
+    "reachy_mini_lib @ file:./packages/reachy_mini_lib",
+    "iphone_cam @ file:./packages/iphone_cam",
+    "wakeword @ file:./packages/wakeword",
 ]
+
+[project.scripts]
+reachy-assistant = "reachy_assistant.assistant:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

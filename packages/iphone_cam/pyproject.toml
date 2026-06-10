@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iphone-cam"
+version = "0.1.0"
+description = "Minimal package to capture a frame from your iPhone camera on Mac"
+dependencies = [
+    "opencv-python>=4.5.0",
+]

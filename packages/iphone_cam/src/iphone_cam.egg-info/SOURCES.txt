@@ -1,0 +1,8 @@
+pyproject.toml
+src/iphone_cam/__init__.py
+src/iphone_cam/camera.py
+src/iphone_cam.egg-info/PKG-INFO
+src/iphone_cam.egg-info/SOURCES.txt
+src/iphone_cam.egg-info/dependency_links.txt
+src/iphone_cam.egg-info/requires.txt
+src/iphone_cam.egg-info/top_level.txt
