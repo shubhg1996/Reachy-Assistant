@@ -1,13 +1,3 @@
-from .action_mapper import ActionMapper
-from .assistant import ReachyAssistant
-from .camera_handler import CameraHandler
-from .intent_handlers import IntentHandlers
-from .key_listener import KeyListener
+from .gateway import Gateway
 
-__all__ = [
-    "ReachyAssistant",
-    "ActionMapper",
-    "KeyListener",
-    "CameraHandler",
-    "IntentHandlers",
-]
+__all__ = ["Gateway"]

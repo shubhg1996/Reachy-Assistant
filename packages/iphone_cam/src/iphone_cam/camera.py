@@ -41,8 +41,7 @@ class IPhoneCamera:
         if self.cap is None:
             index = self.camera_index
             if index is None:
-                # index = self._find_working_camera()
-                index = 1
+                index = self._find_working_camera()
                 if index is None:
                     raise RuntimeError("No working camera found.")
                 self.camera_index = index
