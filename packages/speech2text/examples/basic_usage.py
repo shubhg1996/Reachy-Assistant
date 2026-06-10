@@ -6,7 +6,7 @@ from speech2text import Speech2Text
 stt = Speech2Text(model_name="tiny")  # try "tiny", "small", "medium", "large"
 
 # 2. Transcribe an audio file
-audio_file = "/Users/shubhgupta/Downloads/conversation.wav"  # change this
+audio_file = "conversation.wav"  # change this
 text = stt.transcribe(audio_file)
 
 # 3. Print result
