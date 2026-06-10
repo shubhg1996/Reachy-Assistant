@@ -58,57 +58,46 @@ class TelegramChannel:
         )
 
     async def _handle_message(self, update, context):
-        """Call whenever someone texts the Telegram bot."""
         user_text = update.message.text
         chat_id = update.effective_chat.id
 
-        print(f"\n💬 [Channel: Telegram] Incoming from chat {chat_id}: '{user_text}'")
-
-        # Offload the blocking runtime turn to our worker thread executor
         current_loop = asyncio.get_running_loop()
         agent_reply = await current_loop.run_in_executor(
             None, self.runtime.run_turn, user_text
         )
 
         if agent_reply:
-            # Regex pattern to seek out our embedded file path token
-            file_match = re.search(r"\[FILE_PATH:\s*(.*?)\]", agent_reply)
+            # 1. Deliver the final conversational text reply from the LLM
+            await update.message.reply_text(agent_reply)
 
-            if file_match:
-                photo_path = file_match.group(1).strip()
-                # Clean up the spoken/text response by removing the structural token
-                clean_reply = re.sub(r"\[FILE_PATH:\s*(.*?)\]", "", agent_reply).strip()
-
-                # Send the cleaned up text message context first
-                if clean_reply:
-                    await update.message.reply_text(clean_reply)
-
-                # Check if the photo file exists locally and transmit it natively over the wire!
-                if os.path.exists(photo_path):
-                    print(
-                        f"[Channel: Telegram] Uploading photo asset over Telegram API: {photo_path}"
-                    )
-                    with open(photo_path, "rb") as photo_file:
-                        await update.message.reply_photo(
-                            photo=photo_file, caption="📸 Here is your captured frame!"
+            # 2. Check the runtime for any files generated during this specific turn
+            if self.runtime.pending_output_files:
+                for file_path in self.runtime.pending_output_files:
+                    # Check if the photo file exists locally and transmit it natively over the wire
+                    if os.path.exists(file_path):
+                        print(
+                            f"[Channel: Telegram] Uploading captured asset: {file_path}"
                         )
-                else:
-                    await update.message.reply_text(
-                        "⚠️ Image file generated but target asset path was lost."
-                    )
-            else:
-                # Fallback path if no file tokens are attached to this conversational turn
-                await update.message.reply_text(agent_reply)
+                        with open(file_path, "rb") as photo_file:
+                            try:
+                                await update.message.reply_photo(
+                                    photo=photo_file,
+                                    caption="📸 Image transmission complete.",
+                                    write_timeout=60,  # Extends upload write frame to prevent exceptions
+                                    read_timeout=60,
+                                )
+                            except Exception as upload_err:
+                                print(
+                                    f"[Channel: Telegram] Network upload notice (suppressed): {upload_err}"
+                                )
 
-            # Cross-channel routing for physical voice if enabled globally
+            # 3. Cross-channel routing for physical text-to-speech voice if enabled
             if self.runtime.state.get("voice_out_enabled") and self.voice_out_channel:
                 print(
                     f"[Channel: Telegram] Voice mode active. Routing text payload to speaker..."
                 )
-                # Strip out the token from what the robot physically reads out loud in the room
-                voice_text = re.sub(r"\[FILE_PATH:\s*(.*?)\]", "", agent_reply).strip()
                 threading.Thread(
-                    target=self.voice_out_channel.send, args=(voice_text,), daemon=True
+                    target=self.voice_out_channel.send, args=(agent_reply,), daemon=True
                 ).start()
 
     def stop(self):

@@ -125,16 +125,9 @@ class VoiceChannel:
         agent_reply = self.runtime.run_turn(user_text)
         print(f"[Voice Out] <- {agent_reply}")
 
+        # Pristine textual delivery without structural markdown leaks
         if agent_reply and self.runtime.state.get("voice_out_enabled", False):
-            import re
-
-            # Clean out the file token block so Reachy doesn't try to literally say "[FILE_PATH: photos/...]"
-            # Instead, it will just say something like: "I have taken the picture. Success. Image saved to local disk."
-            clean_voice_reply = re.sub(
-                r"\[FILE_PATH:\s*(.*?)\]", "", agent_reply
-            ).strip()
-
-            self.send(clean_voice_reply)
+            self.send(agent_reply)
 
     def send(self, text: str):
         """Converts text to speech and safely locks hardware vectors while outputting."""

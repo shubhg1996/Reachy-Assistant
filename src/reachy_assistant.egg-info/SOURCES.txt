@@ -12,8 +12,12 @@ src/reachy_assistant.egg-info/top_level.txt
 src/reachy_assistant/agent/__init__.py
 src/reachy_assistant/agent/memory_manager.py
 src/reachy_assistant/agent/runtime.py
+src/reachy_assistant/channels/__init__.py
+src/reachy_assistant/channels/telegram_channel.py
 src/reachy_assistant/channels/voice_channel.py
+src/reachy_assistant/channels/whatsapp_channel.py
 src/reachy_assistant/skills/__init__.py
 src/reachy_assistant/skills/base.py
 src/reachy_assistant/skills/express_emotion.py
 src/reachy_assistant/skills/take_picture.py
+src/reachy_assistant/skills/toggle_modality.py

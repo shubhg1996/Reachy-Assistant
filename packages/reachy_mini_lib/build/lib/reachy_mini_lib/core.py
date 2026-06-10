@@ -44,6 +44,19 @@ class ReachyRobot:
         # The SDK handles cleanup automatically; nothing special needed.
         pass
 
+    def get_onboard_camera_frame(self):
+        """Extract a raw frame matrix from Reachy Mini's native SDK camera stream."""
+        # Accessing the underlying raw ReachyMini instance camera node
+        if hasattr(self._mini, "camera"):
+            # Fetch the latest frame from the active gstreamer stream buffer
+            frame = self._mini.camera.get_frame()
+            if frame is not None:
+                return frame
+            raise RuntimeError("SDK camera stream returned an empty frame buffer.")
+        raise AttributeError(
+            "The active Reachy SDK instance does not have video components initialized."
+        )
+
     @property
     def raw(self):
         """Access the underlying ReachyMini instance for advanced use."""

@@ -1,5 +1,8 @@
 """OpenClaw System Gateway: Coordinates hardware initialization, runtimes, skills, and surfaces."""
 
+import time
+
+from llmclient import LLMClient
 from reachy_mini_lib import ReachyRobot
 
 from .agent.memory_manager import MemoryManager
@@ -18,7 +21,7 @@ class Gateway:
     def __init__(self):
         """Initialize the gateway, setting up hardware and runtime dependencies."""
         # 1. Connect to the underlying physical or simulated hardware platform
-        self.robot = ReachyRobot()
+        self.robot = ReachyRobot(media_backend="gstreamer")
 
         # 2. Instantiate core memory and agent runtime management dependencies
         self.memory_manager = MemoryManager()
@@ -38,8 +41,28 @@ class Gateway:
         # Wake up motors with gravity compensation defaults
         self.robot.torque.wake_up()
 
+        # 2. PHYSICAL MOTION WAKE MATRIX
+        # Smoothly actuate Reachy Mini from its collapsed resting pose to its alert starting posture
+        print("[Gateway] Actuating Reachy Mini to default alert pose...")
+        try:
+            # Set head to look straight ahead (roll=0, pitch=0, yaw=0) over 1.5 seconds
+            self.robot.motion.set_head(
+                roll_deg=0.0, pitch_deg=0.0, yaw_deg=0.0, duration=1.5
+            )
+            # Set antennas to neutral holding positions
+            self.robot.motion.set_antennas(right_deg=0.0, left_deg=0.0, duration=1.0)
+            # Center the body yaw axis
+            self.robot.motion.set_body_yaw(yaw_deg=0.0, duration=1.0)
+
+            # Brief sleep block to allow the physical motors to complete the transit before initializing the LLM client
+            time.sleep(1.5)
+            print("[Gateway] Reachy Mini is now standing alert.")
+        except Exception as pose_err:
+            print(
+                f"[Gateway] Warning: Initial hardware wake pose transition failed: {pose_err}"
+            )
+
         # Ingest the underlying OpenRouter orchestration client from runtime context
-        from llmclient import LLMClient
 
         llm_client = (
             LLMClient()
@@ -47,7 +70,8 @@ class Gateway:
         self.runtime.llm = llm_client
 
         # Dynamic Tool Binding: Register modular system skills natively
-        self.runtime.register_skill(TakePictureSkill())
+        # Dynamic Tool Binding updates
+        self.runtime.register_skill(TakePictureSkill(self.robot))
         self.runtime.register_skill(ExpressEmotionSkill(self.robot))
         self.runtime.register_skill(ToggleModalitySkill(self.runtime))
 

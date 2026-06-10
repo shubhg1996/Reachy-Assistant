@@ -1,6 +1,7 @@
 """OpenClaw-style Agent Runtime Engine handling multi-turn execution and native tool calling."""
 
 import json
+import re
 
 from llmclient import LLMClient
 
@@ -28,9 +29,10 @@ class AgentRuntime:
         # In-memory short-term chat history tracking
         self.session_history = []
         self.max_session_turns = 12
-
-        # Load the persistent state into RAM
         self.state = self.memory.load_state()
+
+        # Track media generated during the current active turn
+        self.pending_output_files = []
 
     def register_skill(self, skill: BaseSkill):
         """Inject an OpenClaw skill into the agent's runtime context."""
@@ -44,6 +46,9 @@ class AgentRuntime:
     def run_turn(self, user_input: str) -> str:
         """Execute a single conversational cycle, handling autonomous tool calling loops."""
         print(f"\n[Runtime] Processing new user turn: '{user_input}'")
+
+        # Clear any file assets left over from previous turns
+        self.pending_output_files = []
 
         # 1. Refresh System Prompt context from files
         system_prompt = self.memory.build_system_prompt()
@@ -71,9 +76,7 @@ class AgentRuntime:
             response_data = self.llm._post("chat/completions", payload)
 
             assistant_msg = response_data["choices"][0]["message"]
-            messages.append(
-                assistant_msg
-            )  # Keep track in our execution execution trace
+            messages.append(assistant_msg)  # Keep track in our execution trace
 
             # Check if the LLM wants to execute any skills
             tool_calls = assistant_msg.get("tool_calls")
@@ -108,15 +111,24 @@ class AgentRuntime:
                 except Exception:
                     function_args = {}
 
-                print(
-                    f"[Runtime] LLM requested execution of tool: '{function_name}' with args: {function_args}"
-                )
-
                 if function_name in self.skills:
-                    # Target and run the mapped skill
                     skill_result = self.skills[function_name].execute(**function_args)
+
+                    # FIX: Flexible regex pattern to intercept the file path cleanly anywhere in the text string
+                    file_match = re.search(r"\[FILE_PATH:\s*([^\]]+)\]", skill_result)
+                    if file_match:
+                        extracted_path = file_match.group(1).strip()
+                        self.pending_output_files.append(extracted_path)
+                        print(
+                            f"[Runtime] Successfully intercepted media asset for surface routing: {extracted_path}"
+                        )
+
+                        # Clean out the raw file token block before passing the string trace history back to the LLM
+                        skill_result = re.sub(
+                            r"\[FILE_PATH:\s*.*?\]", "", skill_result
+                        ).strip()
                 else:
-                    skill_result = f"Error: Tool '{function_name}' is not registered on this robot configuration."
+                    skill_result = f"Error: Tool '{function_name}' is not registered."
 
                 print(f"[Runtime] Tool Execution Result: {skill_result}")
 
@@ -130,4 +142,43 @@ class AgentRuntime:
                     }
                 )
 
-            # Loop continues: The LLM will inspect the tool outputs and generate its final reply.
+            # --- NEW: INTERLEAVED VISION INJECTION VECTOR ---
+            # If the camera tool just appended a file to our runtime tracker array,
+            # we immediately wrap it into a base64 message and append it directly to `messages`
+            # so the model evaluates it on its very next thinking step.
+            if self.pending_output_files:
+                latest_photo_path = self.pending_output_files[-1]
+                print(
+                    f"[Runtime] Vision Triggered! Encoding and injecting image asset data url: {latest_photo_path}"
+                )
+
+                try:
+                    base64_data_url = self.llm.encode_image_to_base64(latest_photo_path)
+
+                    messages.append(
+                        {
+                            "role": "user",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": "The camera captured the requested frame. Analyze this image to answer the previous prompt:",
+                                },
+                                {
+                                    "type": "image_url",
+                                    "image_url": {"url": base64_data_url},
+                                },
+                            ],
+                        }
+                    )
+                except Exception as vision_err:
+                    print(
+                        f"[Runtime] Vision conversion failed, continuing with fallback text: {vision_err}"
+                    )
+                    messages.append(
+                        {
+                            "role": "user",
+                            "content": f"[System Notification: Camera frame encoding failed due to file read exception: {vision_err}]",
+                        }
+                    )
+
+            # Loop continues: The LLM will now inspect both the tool outputs and the injected image array.

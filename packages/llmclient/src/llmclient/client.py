@@ -1,6 +1,8 @@
 """LLM client for interacting with OpenRouter API."""
 
+import base64
 import json
+import mimetypes
 import os
 
 import requests
@@ -105,3 +107,14 @@ class LLMClient:
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
+
+    def encode_image_to_base64(self, file_path: str) -> str:
+        """Convert a local image file into a base64 string for LLM injection."""
+        mime_type, _ = mimetypes.guess_type(file_path)
+        if not mime_type:
+            mime_type = "image/jpeg"
+
+        with open(file_path, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+
+        return f"data:{mime_type};base64,{encoded_string}"
